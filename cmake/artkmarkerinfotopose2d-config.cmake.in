@@ -1,0 +1,54 @@
+# ARTKMarkerInfoToPose2D CMake config file
+#
+# This file sets the following variables:
+# ARTKMarkerInfoToPose2D_FOUND - Always TRUE.
+# ARTKMarkerInfoToPose2D_INCLUDE_DIRS - Directories containing the ARTKMarkerInfoToPose2D include files.
+# ARTKMarkerInfoToPose2D_IDL_DIRS - Directories containing the ARTKMarkerInfoToPose2D IDL files.
+# ARTKMarkerInfoToPose2D_LIBRARIES - Libraries needed to use ARTKMarkerInfoToPose2D.
+# ARTKMarkerInfoToPose2D_DEFINITIONS - Compiler flags for ARTKMarkerInfoToPose2D.
+# ARTKMarkerInfoToPose2D_VERSION - The version of ARTKMarkerInfoToPose2D found.
+# ARTKMarkerInfoToPose2D_VERSION_MAJOR - The major version of ARTKMarkerInfoToPose2D found.
+# ARTKMarkerInfoToPose2D_VERSION_MINOR - The minor version of ARTKMarkerInfoToPose2D found.
+# ARTKMarkerInfoToPose2D_VERSION_REVISION - The revision version of ARTKMarkerInfoToPose2D found.
+# ARTKMarkerInfoToPose2D_VERSION_CANDIDATE - The candidate version of ARTKMarkerInfoToPose2D found.
+
+message(STATUS "Found ARTKMarkerInfoToPose2D-@PROJECT_VERSION@")
+set(ARTKMarkerInfoToPose2D_FOUND TRUE)
+
+find_package(<dependency> REQUIRED)
+
+#set(ARTKMarkerInfoToPose2D_INCLUDE_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@"
+#    ${<dependency>_INCLUDE_DIRS}
+#    )
+#
+#set(ARTKMarkerInfoToPose2D_IDL_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@/idl")
+set(ARTKMarkerInfoToPose2D_INCLUDE_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@"
+    ${<dependency>_INCLUDE_DIRS}
+    )
+set(ARTKMarkerInfoToPose2D_IDL_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@/idl")
+
+
+if(WIN32)
+    set(ARTKMarkerInfoToPose2D_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_STATIC_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+else(WIN32)
+    set(ARTKMarkerInfoToPose2D_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_SHARED_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+endif(WIN32)
+
+set(ARTKMarkerInfoToPose2D_DEFINITIONS ${<dependency>_DEFINITIONS})
+
+set(ARTKMarkerInfoToPose2D_VERSION @PROJECT_VERSION@)
+set(ARTKMarkerInfoToPose2D_VERSION_MAJOR @PROJECT_VERSION_MAJOR@)
+set(ARTKMarkerInfoToPose2D_VERSION_MINOR @PROJECT_VERSION_MINOR@)
+set(ARTKMarkerInfoToPose2D_VERSION_REVISION @PROJECT_VERSION_REVISION@)
+set(ARTKMarkerInfoToPose2D_VERSION_CANDIDATE @PROJECT_VERSION_CANDIDATE@)
+
