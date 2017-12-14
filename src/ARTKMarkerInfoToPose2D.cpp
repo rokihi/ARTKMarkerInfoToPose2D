@@ -31,7 +31,7 @@ static const char* artkmarkerinfotopose2d_spec[] =
     "conf.default.pose3_id", "1",
     "conf.default.adjust_x", "0.0",
     "conf.default.adjust_y", "0.0",
-    "conf.default.adjust_angle", "-180.0",
+    "conf.default.adjust_angle", "-3.14",
 
     // Widget
     "conf.__widget__.pose1_id", "text",
@@ -105,7 +105,7 @@ RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onInitialize()
 	bindParameter("pose3_id", m_pose3_id, "1");
 	bindParameter("adjust_x", m_adjust_x, "0.0");
 	bindParameter("adjust_y", m_adjust_y, "0.0");
-	bindParameter("adjust_angle", m_adjust_angle, "-180.0");
+	bindParameter("adjust_angle", m_adjust_angle, "-3.14");
 	// </rtc-template>
 
 	return RTC::RTC_OK;
@@ -135,7 +135,6 @@ return RTC::RTC_OK;
 
 RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onActivated(RTC::UniqueId ec_id)
 {
-	m_adjust_angle = m_adjust_angle * PI / 180;
 	return RTC::RTC_OK;
 }
 
@@ -177,7 +176,7 @@ RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onExecute(RTC::UniqueId ec_id)
 				}
 			}
 			
-			std::cout << m_adjust_angle << "   position.x,   position.y,   heading " << std::endl;
+			std::cout << "   position.x,   position.y,   heading    #adjust=" << m_adjust_angle << std::endl;
 			std::cout << "pose1: " << m_pose1.data.position.x << ",  " << m_pose1.data.position.y << ",  " << m_pose1.data.heading << 
 				" |  pose2: " << m_pose2.data.position.x << ",  " << m_pose2.data.position.y << ",  " << m_pose2.data.heading << std::endl;
 			std::cout << std::endl;
