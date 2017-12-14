@@ -30,7 +30,7 @@ static const char* artkmarkerinfotopose2d_spec[] =
     "conf.default.pose3_id", "1",
     "conf.default.adjust_x", "0.0",
     "conf.default.adjust_y", "0.0",
-    "conf.default.adjust_angle", "-90.0",
+    "conf.default.adjust_angle", "0.0",
 
     // Widget
     "conf.__widget__.pose1_id", "text",
@@ -104,7 +104,7 @@ RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onInitialize()
 	bindParameter("pose3_id", m_pose3_id, "1");
 	bindParameter("adjust_x", m_adjust_x, "0.0");
 	bindParameter("adjust_y", m_adjust_y, "0.0");
-	bindParameter("adjust_angle", m_adjust_angle, "-90.0");
+	bindParameter("adjust_angle", m_adjust_angle, "0.0");
 	// </rtc-template>
 
 	return RTC::RTC_OK;
@@ -152,8 +152,8 @@ RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onExecute(RTC::UniqueId ec_id)
 
 		for (int i = 0; i < m_marker_info.length(); i++) {
 			if (m_marker_info[i].id == m_pose1_id){
-				m_pose1.data.position.x = (m_marker_info[i].markerPoseMatrix[1][3]) + m_adjust_x;
-				m_pose1.data.position.y = (-m_marker_info[i].markerPoseMatrix[2][3]) + m_adjust_y;
+				m_pose1.data.position.x = -m_marker_info[i].markerPoseMatrix[1][3] + m_adjust_x;
+				m_pose1.data.position.y = m_marker_info[i].markerPoseMatrix[2][3] + m_adjust_y;
 				m_pose1.data.heading = atan2(m_marker_info[i].markerPoseMatrix[2][1],
 					m_marker_info[i].markerPoseMatrix[2][2]) * 180 / 3.14159; // + m_adjust_angle;
 				if (m_pose1.data.heading < 0 || m_pose1.data.heading + m_adjust_angle < 0){
@@ -164,8 +164,8 @@ RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onExecute(RTC::UniqueId ec_id)
 				}
 			}
 			else if (m_marker_info[i].id == m_pose2_id){
-				m_pose2.data.position.x = (m_marker_info[i].markerPoseMatrix[1][3] * -1) + m_adjust_x;
-				m_pose2.data.position.y = (-m_marker_info[i].markerPoseMatrix[2][3] ) + m_adjust_y;
+				m_pose2.data.position.x = -m_marker_info[i].markerPoseMatrix[1][3] + m_adjust_x;
+				m_pose2.data.position.y = m_marker_info[i].markerPoseMatrix[2][3] + m_adjust_y;
 				m_pose2.data.heading = atan2(m_marker_info[i].markerPoseMatrix[2][1],
 					m_marker_info[i].markerPoseMatrix[2][2]) * 180 / 3.14159; // + m_adjust_angle;
 				if (m_pose2.data.heading < 0 || m_pose2.data.heading + m_adjust_angle < 0){
