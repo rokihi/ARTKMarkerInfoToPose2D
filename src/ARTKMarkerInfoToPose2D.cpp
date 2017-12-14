@@ -8,6 +8,7 @@
  */
 
 #include "ARTKMarkerInfoToPose2D.h"
+#define PI 3.14159265258979 
 
 // Module specification
 // <rtc-template block="module_spec">
@@ -30,7 +31,7 @@ static const char* artkmarkerinfotopose2d_spec[] =
     "conf.default.pose3_id", "1",
     "conf.default.adjust_x", "0.0",
     "conf.default.adjust_y", "0.0",
-    "conf.default.adjust_angle", "0.0",
+    "conf.default.adjust_angle", "-180.0",
 
     // Widget
     "conf.__widget__.pose1_id", "text",
@@ -104,7 +105,7 @@ RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onInitialize()
 	bindParameter("pose3_id", m_pose3_id, "1");
 	bindParameter("adjust_x", m_adjust_x, "0.0");
 	bindParameter("adjust_y", m_adjust_y, "0.0");
-	bindParameter("adjust_angle", m_adjust_angle, "0.0");
+	bindParameter("adjust_angle", m_adjust_angle, "-180.0");
 	// </rtc-template>
 
 	return RTC::RTC_OK;
@@ -134,6 +135,7 @@ return RTC::RTC_OK;
 
 RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onActivated(RTC::UniqueId ec_id)
 {
+	m_adjust_angle = m_adjust_angle * PI / 180;
 	return RTC::RTC_OK;
 }
 
@@ -147,7 +149,6 @@ RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onDeactivated(RTC::UniqueId ec_id)
 RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onExecute(RTC::UniqueId ec_id)
 {
 	if (m_marker_infoIn.isNew()){
-		//printf("Data_ok\n");
 		m_marker_infoIn.read();
 
 		for (int i = 0; i < m_marker_info.length(); i++) {
@@ -155,9 +156,9 @@ RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onExecute(RTC::UniqueId ec_id)
 				m_pose1.data.position.x = -m_marker_info[i].markerPoseMatrix[1][3] + m_adjust_x;
 				m_pose1.data.position.y = m_marker_info[i].markerPoseMatrix[2][3] + m_adjust_y;
 				m_pose1.data.heading = atan2(m_marker_info[i].markerPoseMatrix[2][1],
-					m_marker_info[i].markerPoseMatrix[2][2]) * 180 / 3.14159; // + m_adjust_angle;
-				if (m_pose1.data.heading < 0 || m_pose1.data.heading + m_adjust_angle < 0){
-					m_pose1.data.heading += 360 + m_adjust_angle;
+					m_marker_info[i].markerPoseMatrix[2][2]); // *180 / PI; // + m_adjust_angle;
+				if (m_pose1.data.heading < 0 || m_pose1.data.heading + m_adjust_angle  < 0){
+					m_pose1.data.heading += 2*PI + m_adjust_angle;
 				}
 				else{
 					m_pose1.data.heading += m_adjust_angle;
@@ -167,18 +168,19 @@ RTC::ReturnCode_t ARTKMarkerInfoToPose2D::onExecute(RTC::UniqueId ec_id)
 				m_pose2.data.position.x = -m_marker_info[i].markerPoseMatrix[1][3] + m_adjust_x;
 				m_pose2.data.position.y = m_marker_info[i].markerPoseMatrix[2][3] + m_adjust_y;
 				m_pose2.data.heading = atan2(m_marker_info[i].markerPoseMatrix[2][1],
-					m_marker_info[i].markerPoseMatrix[2][2]) * 180 / 3.14159; // + m_adjust_angle;
+					m_marker_info[i].markerPoseMatrix[2][2]); // *180 / PI; // + m_adjust_angle;
 				if (m_pose2.data.heading < 0 || m_pose2.data.heading + m_adjust_angle < 0){
-					m_pose2.data.heading += 360 + m_adjust_angle;
+					m_pose2.data.heading += 2*PI + m_adjust_angle;
 				}
 				else{
 					m_pose2.data.heading += m_adjust_angle;
 				}
 			}
-			std::cout << "   position.x,   position.y,   heading " << std::endl;
-			std::cout << "pose1: " << m_pose1.data.position.x << ",  " << m_pose1.data.position.y << ",  " << m_pose1.data.heading << std::endl;
-			std::cout << "pose2: " << m_pose2.data.position.x << ",  " << m_pose2.data.position.y << ",  " << m_pose2.data.heading << std::endl;
-			std::cout << "\n";
+			
+			std::cout << m_adjust_angle << "   position.x,   position.y,   heading " << std::endl;
+			std::cout << "pose1: " << m_pose1.data.position.x << ",  " << m_pose1.data.position.y << ",  " << m_pose1.data.heading << 
+				" |  pose2: " << m_pose2.data.position.x << ",  " << m_pose2.data.position.y << ",  " << m_pose2.data.heading << std::endl;
+			std::cout << std::endl;
 		}
 		m_pose1Out.write();
 		m_pose2Out.write();
